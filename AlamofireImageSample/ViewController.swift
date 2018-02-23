@@ -7,19 +7,32 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class ViewController: UIViewController {
+    
+    @IBOutlet weak var imgView: UIImageView!
+    
+    let imageDownloader = ImageDownloader(
+        configuration: ImageDownloader.defaultURLSessionConfiguration(),
+        downloadPrioritization: .fifo,
+        maximumActiveDownloads: 4,
+        imageCache: AutoPurgingImageCache()
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func downloadImageBtnPressed(_ sender: Any) {
+        
+        let urlRequest = URLRequest(url: URL(string: "https://www.dropbox.com/s/5o1h8lr3aejnstj/bt_book_now%403x.png?dl=1")!)
+        
+        imageDownloader.download(urlRequest) { response in
+            if let image = response.result.value {
+                self.imgView.image = image
+            }
+        }
     }
-
-
 }
 
